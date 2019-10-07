@@ -22,6 +22,15 @@ services:
       - 9200:9200
     networks:
       - esnet
+  kb01:
+    image: docker.elastic.co/kibana/kibana:7.4.0
+    container_name: kb1
+    volumes: 
+     - .\kibana\config:/usr/share/kibana/config
+    ports:
+      - 5601:5601
+    networks:
+      - esnet
 #  es02:
 #    image: docker.elastic.co/elasticsearch/elasticsearch:7.4.0
 #    container_name: es02
