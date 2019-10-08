@@ -1,12 +1,12 @@
 version: '2.2'
 services:
-  es01:
+  elasticsearch1:
     image: docker.elastic.co/elasticsearch/elasticsearch:7.4.0
-    container_name: es01
+    container_name: elasticsearch1
     environment:
-      - node.name=es01
+      - node.name=elasticsearch1
       - discovery.type=single-node
-      #- cluster.initial_master_nodes=es01
+      #- cluster.initial_master_nodes=elasticsearch
       #,es02
       - cluster.name=docker-cluster
       - bootstrap.memory_lock=true
@@ -20,17 +20,22 @@ services:
       - .\data:/usr/share/elasticsearch/data
     ports:
       - 9200:9200
+      - 9300:9300
     networks:
       - esnet
   kb01:
     image: docker.elastic.co/kibana/kibana:7.4.0
     container_name: kb1
-    volumes: 
-     - .\kibana\config:/usr/share/kibana/config
+    environment:
+     - ELASTICSEARCH_HOSTS=http://elasticsearch1:9200
+    #volumes: 
+     #- .\kibana\config:/usr/share/kibana/config
     ports:
       - 5601:5601
     networks:
       - esnet
+    depends_on:
+      - elasticsearch1
 #  es02:
 #    image: docker.elastic.co/elasticsearch/elasticsearch:7.4.0
 #    container_name: es02
@@ -58,3 +63,4 @@ services:
 
 networks:
   esnet:
+    driver: bridge
